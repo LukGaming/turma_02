@@ -1,16 +1,41 @@
-# turma_02
+# Segunda Turma da Mentoria Paulo Mendes
 
-A new Flutter project.
+Bem-vindo ao repositório oficial da segunda turma da mentoria conduzida por Paulo Mendes!
 
-## Getting Started
+## Sobre o Projeto
+Este repositório foi criado para acompanhar e registrar toda a evolução dos estudos sobre gerenciadores de estado no Flutter, além de apresentar e discutir a nova arquitetura de software proposta pela equipe oficial do Flutter.
 
-This project is a starting point for a Flutter application.
+## Objetivos
+- Demonstrar diferentes abordagens e ferramentas para gerenciamento de estado em Flutter.
+- Compartilhar exemplos práticos, dicas e boas práticas.
+- Apresentar a nova arquitetura de software recomendada pelo Flutter, explorando seus conceitos e vantagens.
+- Proporcionar um ambiente colaborativo para dúvidas, sugestões e troca de experiências entre os participantes da mentoria.
 
-A few resources to get you started if this is your first Flutter project:
+## Tópicos Abordados
+- Introdução ao gerenciamento de estado
+- Comparação entre os principais gerenciadores (ChangeNotifier, ValueNotifier, State Pattern, Commande.)
+- Casos de uso e exemplos reais
+- Nova arquitetura do Flutter: conceitos, estrutura e implementação
+- Desafios e soluções encontradas durante a mentoria
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Como Utilizar
+1. Clone este repositório:
+   ```sh
+   git clone <url-do-repositorio>
+   ```
+2. Instale as dependências do projeto:
+   ```sh
+   flutter pub get
+   ```
+3. Execute o projeto:
+   ```sh
+   flutter run
+   ```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Contribuição
+Sinta-se à vontade para abrir issues, enviar sugestões ou contribuir com exemplos e melhorias!
+
+---
+
+Mentoria Paulo Mendes • Segunda Turma
+
