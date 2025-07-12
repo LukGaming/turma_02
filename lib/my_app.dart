@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:turma_02/pages/product_page.dart';
+import 'package:turma_02/ui/products/widgets/products_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const ProductPage(),
+      home: const ProductScreen(),
     );
   }
 }

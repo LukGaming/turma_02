@@ -1,4 +1,4 @@
-import 'package:turma_02/models/product.dart';
+import 'package:turma_02/domain/models/product.dart';
 
 List<ProductModel> generateProductList() {
   return List.generate(
