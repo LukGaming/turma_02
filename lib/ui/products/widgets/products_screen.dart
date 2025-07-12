@@ -9,7 +9,7 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
-  final ProductController controller = ProductController();
+  final ProductsViewModel controller = ProductsViewModel();
 
   @override
   void initState() {

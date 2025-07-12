@@ -4,8 +4,8 @@ import 'package:turma_02/domain/models/product.dart';
 import 'package:turma_02/utils/command.dart';
 import 'package:turma_02/utils/result.dart';
 
-class ProductController extends ChangeNotifier {
-  ProductController();
+class ProductsViewModel extends ChangeNotifier {
+  ProductsViewModel();
 
   List<ProductModel> _products = [];
   List<ProductModel> get products => _products;
