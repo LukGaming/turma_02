@@ -14,3 +14,7 @@ class Error<T> extends Result<T> {
   final Exception error;
   const Error._(this.error);
 }
+
+extension ResultExtension<T> on Result<T> {
+  Ok<T> get asOk => this as Ok<T>;
+}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:turma_02/ui/products/viewmodels/products_viewmodel.dart';
+import 'package:turma_02/utils/command_builder.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key});
@@ -96,79 +97,97 @@ class _ProductScreenState extends State<ProductScreen> {
       body: Column(
         children: [
           Expanded(
-            child: ListenableBuilder(
-              listenable: controller.filteredProductsCommand,
-              builder: (context, child) {
-                final command = controller.filteredProductsCommand;
-                if (command.running) {
-                  return Center(child: CircularProgressIndicator());
-                }
-                if (command.error) {
-                  return Center(
-                    child: Text("Ocorreu um erro"),
-                  );
-                }
-                return child!;
+            child: CommandBuilder(
+              command: controller.filteredProductsCommand,
+              onRunning: () {
+                return Center(child: Text("Carregando..."));
               },
-              child: ListenableBuilder(
-                listenable: controller,
-                builder: (context, child) {
-                  return ListView.builder(
-                    itemCount: controller.filteredProducts.length,
-                    itemBuilder: (context, index) {
-                      final product = controller.filteredProducts[index];
-                      return ListTile(
-                        leading: Text(product.id.toString()),
-                        title: Text(product.nome),
-                        trailing: IconButton(
-                          onPressed: () =>
-                              controller.removeProduct.execute(product),
-                          icon: Icon(Icons.delete),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
+              onError: (error) {
+                return Center(
+                  child: Text(error.toString()),
+                );
+              },
+              child: (result) {
+                return FilteredProductsWidget(
+                  controller: controller,
+                );
+              },
             ),
           ),
-          Expanded(
-            child: ListenableBuilder(
-              listenable: controller.load,
-              builder: (context, child) {
-                final command = controller.load;
-                if (command.running) {
-                  return Center(child: CircularProgressIndicator());
-                }
-                if (command.error) {
-                  return Center(
-                    child: Text("Ocorreu um erro"),
-                  );
-                }
-                return child!;
-              },
-              child: ListenableBuilder(
-                listenable: controller,
-                builder: (context, child) {
-                  return ListView.builder(
-                    itemCount: controller.products.length,
-                    itemBuilder: (context, index) {
-                      final product = controller.products[index];
-                      return ListTile(
-                        leading: Text(product.id.toString()),
-                        title: Text(product.nome),
-                        trailing: IconButton(
-                          onPressed: () =>
-                              controller.removeProduct.execute(product),
-                          icon: Icon(Icons.delete),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-          ),
+          // Expanded(
+          //   child: ListenableBuilder(
+          //     listenable: controller.filteredProductsCommand,
+          //     builder: (context, child) {
+          //       final command = controller.filteredProductsCommand;
+          //       if (command.running) {
+          //         return Center(child: CircularProgressIndicator());
+          //       }
+          //       if (command.error) {
+          //         return Center(
+          //           child: Text("Ocorreu um erro"),
+          //         );
+          //       }
+          //       return child!;
+          //     },
+          //     child: ListenableBuilder(
+          //       listenable: controller,
+          //       builder: (context, child) {
+          //         return ListView.builder(
+          //           itemCount: controller.filteredProducts.length,
+          //           itemBuilder: (context, index) {
+          //             final product = controller.filteredProducts[index];
+          //             return ListTile(
+          //               leading: Text(product.id.toString()),
+          //               title: Text(product.nome),
+          //               trailing: IconButton(
+          //                 onPressed: () =>
+          //                     controller.removeProduct.execute(product),
+          //                 icon: Icon(Icons.delete),
+          //               ),
+          //             );
+          //           },
+          //         );
+          //       },
+          //     ),
+          //   ),
+          // ),
+          // Expanded(
+          //   child: ListenableBuilder(
+          //     listenable: controller.load,
+          //     builder: (context, child) {
+          //       final command = controller.load;
+          //       if (command.running) {
+          //         return Center(child: CircularProgressIndicator());
+          //       }
+          //       if (command.error) {
+          //         return Center(
+          //           child: Text("Ocorreu um erro"),
+          //         );
+          //       }
+          //       return child!;
+          //     },
+          //     child: ListenableBuilder(
+          //       listenable: controller,
+          //       builder: (context, child) {
+          //         return ListView.builder(
+          //           itemCount: controller.products.length,
+          //           itemBuilder: (context, index) {
+          //             final product = controller.products[index];
+          //             return ListTile(
+          //               leading: Text(product.id.toString()),
+          //               title: Text(product.nome),
+          //               trailing: IconButton(
+          //                 onPressed: () =>
+          //                     controller.removeProduct.execute(product),
+          //                 icon: Icon(Icons.delete),
+          //               ),
+          //             );
+          //           },
+          //         );
+          //       },
+          //     ),
+          //   ),
+          // ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -186,5 +205,37 @@ class _ProductScreenState extends State<ProductScreen> {
     controller.addProduct.removeListener(_onCreateProduct);
     controller.removeProduct.removeListener(_onRemoveProduct);
     super.dispose();
+  }
+}
+
+class FilteredProductsWidget extends StatelessWidget {
+  const FilteredProductsWidget({
+    super.key,
+    required this.controller,
+  });
+
+  final ProductsViewModel controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (child, context) {
+        return ListView.builder(
+          itemCount: controller.filteredProducts.length,
+          itemBuilder: (context, index) {
+            final product = controller.filteredProducts[index];
+            return ListTile(
+              leading: Text(product.id.toString()),
+              title: Text(product.nome),
+              trailing: IconButton(
+                onPressed: () => controller.removeProduct.execute(product),
+                icon: Icon(Icons.delete),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 }
