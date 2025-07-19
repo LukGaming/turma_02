@@ -16,7 +16,6 @@ class _ProductScreenState extends State<ProductScreen> {
   void initState() {
     super.initState();
     controller.load.execute();
-    controller.filteredProductsCommand.execute();
     controller.addProduct.addListener(_onCreateProduct);
     controller.removeProduct.addListener(_onRemoveProduct);
   }
@@ -94,101 +93,42 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: CommandBuilder(
-              command: controller.filteredProductsCommand,
-              onRunning: () {
-                return Center(child: Text("Carregando..."));
-              },
-              onError: (error) {
-                return Center(
-                  child: Text(error.toString()),
-                );
-              },
-              child: (result) {
-                return FilteredProductsWidget(
-                  controller: controller,
-                );
-              },
-            ),
+      body: Expanded(
+        child: ListenableBuilder(
+          listenable: controller.load,
+          builder: (context, child) {
+            final command = controller.load;
+            if (command.running) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (command.error) {
+              return Center(
+                child: Text("Ocorreu um erro"),
+              );
+            }
+            return child!;
+          },
+          child: ListenableBuilder(
+            listenable: controller,
+            builder: (context, child) {
+              return ListView.builder(
+                itemCount: controller.products.length,
+                itemBuilder: (context, index) {
+                  final product = controller.products[index];
+                  return ListTile(
+                    leading: Text(product.id.toString()),
+                    title: Text(product.nome),
+                    trailing: IconButton(
+                      onPressed: () =>
+                          controller.removeProduct.execute(product),
+                      icon: Icon(Icons.delete),
+                    ),
+                  );
+                },
+              );
+            },
           ),
-          // Expanded(
-          //   child: ListenableBuilder(
-          //     listenable: controller.filteredProductsCommand,
-          //     builder: (context, child) {
-          //       final command = controller.filteredProductsCommand;
-          //       if (command.running) {
-          //         return Center(child: CircularProgressIndicator());
-          //       }
-          //       if (command.error) {
-          //         return Center(
-          //           child: Text("Ocorreu um erro"),
-          //         );
-          //       }
-          //       return child!;
-          //     },
-          //     child: ListenableBuilder(
-          //       listenable: controller,
-          //       builder: (context, child) {
-          //         return ListView.builder(
-          //           itemCount: controller.filteredProducts.length,
-          //           itemBuilder: (context, index) {
-          //             final product = controller.filteredProducts[index];
-          //             return ListTile(
-          //               leading: Text(product.id.toString()),
-          //               title: Text(product.nome),
-          //               trailing: IconButton(
-          //                 onPressed: () =>
-          //                     controller.removeProduct.execute(product),
-          //                 icon: Icon(Icons.delete),
-          //               ),
-          //             );
-          //           },
-          //         );
-          //       },
-          //     ),
-          //   ),
-          // ),
-          // Expanded(
-          //   child: ListenableBuilder(
-          //     listenable: controller.load,
-          //     builder: (context, child) {
-          //       final command = controller.load;
-          //       if (command.running) {
-          //         return Center(child: CircularProgressIndicator());
-          //       }
-          //       if (command.error) {
-          //         return Center(
-          //           child: Text("Ocorreu um erro"),
-          //         );
-          //       }
-          //       return child!;
-          //     },
-          //     child: ListenableBuilder(
-          //       listenable: controller,
-          //       builder: (context, child) {
-          //         return ListView.builder(
-          //           itemCount: controller.products.length,
-          //           itemBuilder: (context, index) {
-          //             final product = controller.products[index];
-          //             return ListTile(
-          //               leading: Text(product.id.toString()),
-          //               title: Text(product.nome),
-          //               trailing: IconButton(
-          //                 onPressed: () =>
-          //                     controller.removeProduct.execute(product),
-          //                 icon: Icon(Icons.delete),
-          //               ),
-          //             );
-          //           },
-          //         );
-          //       },
-          //     ),
-          //   ),
-          // ),
-        ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
