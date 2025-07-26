@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:turma_02/data/repositories/product/product_repository.dart';
 import 'package:turma_02/mock/products.dart';
-import 'package:turma_02/domain/models/product.dart';
+import 'package:turma_02/domain/models/product_model.dart';
 import 'package:turma_02/utils/command.dart';
 import 'package:turma_02/utils/result.dart';
 
 class ProductsViewModel extends ChangeNotifier {
-  ProductsViewModel();
+  final ProductRepository _productRepository;
+  ProductsViewModel(this._productRepository) {
+    _productRepository.addListener(() {
+      notifyListeners();
+    });
+  }
 
-  List<ProductModel> _products = [];
-  List<ProductModel> get products => _products;
+  List<ProductModel> get products => _productRepository.products;
 
   late final load = Command0(_load);
   late final addProduct = Command1(_addProduct);
@@ -19,10 +24,7 @@ class ProductsViewModel extends ChangeNotifier {
   List<ProductModel> filteredProducts = [];
 
   Future<Result<List<ProductModel>>> _load() async {
-    await Future.delayed(Duration(seconds: 1));
-    final result = generateProductList();
-    _products = result;
-    return Result.ok(result);
+    return await _productRepository.get();
   }
 
   Future<Result<List<ProductModel>>> _filterByCategory() async {
@@ -37,17 +39,10 @@ class ProductsViewModel extends ChangeNotifier {
   }
 
   Future<Result<ProductModel>> _addProduct(String nome) async {
-    await Future.delayed(Duration(seconds: 3));
-    final result = ProductModel(id: _products.length + 1, nome: nome);
-    _products.add(result);
-    notifyListeners();
-    return Result.ok(result);
+    return await _productRepository.create(nome);
   }
 
   Future<Result<void>> _removeProduct(ProductModel product) async {
-    await Future.delayed(Duration(seconds: 2));
-    _products.remove(product);
-    notifyListeners();
-    return Result.ok(null);
+    return await _productRepository.delete(product);
   }
 }

@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:turma_02/ui/products/viewmodels/products_viewmodel.dart';
-import 'package:turma_02/utils/command_builder.dart';
 
 class ProductScreen extends StatefulWidget {
-  const ProductScreen({super.key});
+  final ProductsViewModel viewModel;
+  const ProductScreen({
+    super.key,
+    required this.viewModel,
+  });
 
   @override
   State<ProductScreen> createState() => _ProductScreenState();
 }
 
 class _ProductScreenState extends State<ProductScreen> {
-  final ProductsViewModel controller = ProductsViewModel();
-
   @override
   void initState() {
     super.initState();
-    controller.load.execute();
-    controller.addProduct.addListener(_onCreateProduct);
-    controller.removeProduct.addListener(_onRemoveProduct);
+    widget.viewModel.load.execute();
+    widget.viewModel.addProduct.addListener(_onCreateProduct);
+    widget.viewModel.removeProduct.addListener(_onRemoveProduct);
   }
 
   void _onCreateProduct() {
-    final command = controller.addProduct;
+    final command = widget.viewModel.addProduct;
     if (command.running) {
       showDialog(
         barrierDismissible: false,
@@ -56,7 +57,7 @@ class _ProductScreenState extends State<ProductScreen> {
   }
 
   void _onRemoveProduct() {
-    final command = controller.removeProduct;
+    final command = widget.viewModel.removeProduct;
     if (command.running) {
       showDialog(
         barrierDismissible: false,
@@ -95,9 +96,9 @@ class _ProductScreenState extends State<ProductScreen> {
     return Scaffold(
       body: Expanded(
         child: ListenableBuilder(
-          listenable: controller.load,
+          listenable: widget.viewModel.load,
           builder: (context, child) {
-            final command = controller.load;
+            final command = widget.viewModel.load;
             if (command.running) {
               return Center(child: CircularProgressIndicator());
             }
@@ -109,18 +110,18 @@ class _ProductScreenState extends State<ProductScreen> {
             return child!;
           },
           child: ListenableBuilder(
-            listenable: controller,
+            listenable: widget.viewModel,
             builder: (context, child) {
               return ListView.builder(
-                itemCount: controller.products.length,
+                itemCount: widget.viewModel.products.length,
                 itemBuilder: (context, index) {
-                  final product = controller.products[index];
+                  final product = widget.viewModel.products[index];
                   return ListTile(
                     leading: Text(product.id.toString()),
                     title: Text(product.nome),
                     trailing: IconButton(
                       onPressed: () =>
-                          controller.removeProduct.execute(product),
+                          widget.viewModel.removeProduct.execute(product),
                       icon: Icon(Icons.delete),
                     ),
                   );
@@ -132,8 +133,8 @@ class _ProductScreenState extends State<ProductScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          controller.addProduct.execute("Novo Produto");
-          // controller.addProduct
+          widget.viewModel.addProduct.execute("Novo Produto");
+          // widget.viewModel.addProduct
         },
         child: Icon(Icons.add),
       ),
@@ -142,8 +143,8 @@ class _ProductScreenState extends State<ProductScreen> {
 
   @override
   void dispose() {
-    controller.addProduct.removeListener(_onCreateProduct);
-    controller.removeProduct.removeListener(_onRemoveProduct);
+    widget.viewModel.addProduct.removeListener(_onCreateProduct);
+    widget.viewModel.removeProduct.removeListener(_onRemoveProduct);
     super.dispose();
   }
 }
@@ -151,25 +152,25 @@ class _ProductScreenState extends State<ProductScreen> {
 class FilteredProductsWidget extends StatelessWidget {
   const FilteredProductsWidget({
     super.key,
-    required this.controller,
+    required this.viewModel,
   });
 
-  final ProductsViewModel controller;
+  final ProductsViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: controller,
+      listenable: viewModel,
       builder: (child, context) {
         return ListView.builder(
-          itemCount: controller.filteredProducts.length,
+          itemCount: viewModel.filteredProducts.length,
           itemBuilder: (context, index) {
-            final product = controller.filteredProducts[index];
+            final product = viewModel.filteredProducts[index];
             return ListTile(
               leading: Text(product.id.toString()),
               title: Text(product.nome),
               trailing: IconButton(
-                onPressed: () => controller.removeProduct.execute(product),
+                onPressed: () => viewModel.removeProduct.execute(product),
                 icon: Icon(Icons.delete),
               ),
             );

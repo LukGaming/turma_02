@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:turma_02/data/repositories/product/product_repository_dev.dart';
+import 'package:turma_02/ui/products/viewmodels/products_viewmodel.dart';
 import 'package:turma_02/ui/products/widgets/products_screen.dart';
 
 class MyApp extends StatelessWidget {
@@ -11,7 +13,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const ProductScreen(),
+      home: ProductScreen(
+        viewModel: ProductsViewModel(ProductRepositoryDev()),
+      ),
     );
   }
 }
