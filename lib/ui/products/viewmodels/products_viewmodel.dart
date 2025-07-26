@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:turma_02/data/repositories/product/product_repository.dart';
+import 'package:turma_02/domain/dtos/create_product_dto.dart';
 import 'package:turma_02/mock/products.dart';
 import 'package:turma_02/domain/models/product_model.dart';
 import 'package:turma_02/utils/command.dart';
@@ -38,8 +39,8 @@ class ProductsViewModel extends ChangeNotifier {
     return Result.ok(filteredProducts);
   }
 
-  Future<Result<ProductModel>> _addProduct(String nome) async {
-    return await _productRepository.create(nome);
+  Future<Result<ProductModel>> _addProduct(CreateProductDto product) async {
+    return await _productRepository.create(product);
   }
 
   Future<Result<void>> _removeProduct(ProductModel product) async {

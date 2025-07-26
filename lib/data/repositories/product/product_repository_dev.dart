@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:turma_02/data/repositories/product/product_repository.dart';
+import 'package:turma_02/domain/dtos/create_product_dto.dart';
 import 'package:turma_02/domain/models/product_model.dart';
 import 'package:turma_02/mock/products.dart';
 import 'package:turma_02/utils/result.dart';
@@ -10,10 +11,10 @@ class ProductRepositoryDev extends ChangeNotifier implements ProductRepository {
   List<ProductModel> _products = generateProductList();
 
   @override
-  Future<Result<ProductModel>> create(String nome) async {
+  Future<Result<ProductModel>> create(CreateProductDto product) async {
     try {
       await Future.delayed(Duration(seconds: 1));
-      final result = ProductModel(id: _products.length + 1, nome: nome);
+      final result = ProductModel(id: (_products.length + 1).toString(), name: product.name, price: product.price, categoryId: product.categoryId);
       _products.add(result);
       return Result.ok(result);
     } on Exception catch (error) {

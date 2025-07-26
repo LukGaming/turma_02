@@ -1,9 +1,13 @@
 class ProductModel {
-  final int id;
-  final String nome;
+  final String id;
+  final String name;
+  final double price;
+  final String categoryId;
 
   const ProductModel({
     required this.id,
-    required this.nome,
+    required this.name,
+    required this.price,
+    required this.categoryId,
   });
 }

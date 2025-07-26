@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:turma_02/domain/dtos/create_product_dto.dart';
 import 'package:turma_02/ui/products/viewmodels/products_viewmodel.dart';
 
 class ProductScreen extends StatefulWidget {
@@ -94,47 +95,44 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Expanded(
+      body: ListenableBuilder(
+        listenable: widget.viewModel.load,
+        builder: (context, child) {
+          final command = widget.viewModel.load;
+          if (command.running) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (command.error) {
+            return Center(
+              child: Text("Ocorreu um erro"),
+            );
+          }
+          return child!;
+        },
         child: ListenableBuilder(
-          listenable: widget.viewModel.load,
+          listenable: widget.viewModel,
           builder: (context, child) {
-            final command = widget.viewModel.load;
-            if (command.running) {
-              return Center(child: CircularProgressIndicator());
-            }
-            if (command.error) {
-              return Center(
-                child: Text("Ocorreu um erro"),
-              );
-            }
-            return child!;
+            return ListView.builder(
+              itemCount: widget.viewModel.products.length,
+              itemBuilder: (context, index) {
+                final product = widget.viewModel.products[index];
+                return ListTile(
+                  leading: Text(product.id.toString()),
+                  title: Text(product.name),
+                  trailing: IconButton(
+                    onPressed: () =>
+                        widget.viewModel.removeProduct.execute(product),
+                    icon: Icon(Icons.delete),
+                  ),
+                );
+              },
+            );
           },
-          child: ListenableBuilder(
-            listenable: widget.viewModel,
-            builder: (context, child) {
-              return ListView.builder(
-                itemCount: widget.viewModel.products.length,
-                itemBuilder: (context, index) {
-                  final product = widget.viewModel.products[index];
-                  return ListTile(
-                    leading: Text(product.id.toString()),
-                    title: Text(product.nome),
-                    trailing: IconButton(
-                      onPressed: () =>
-                          widget.viewModel.removeProduct.execute(product),
-                      icon: Icon(Icons.delete),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          widget.viewModel.addProduct.execute("Novo Produto");
-          // widget.viewModel.addProduct
+          widget.viewModel.addProduct.execute(CreateProductDto(name: "name", price: 10.0, categoryId: "category2"));
         },
         child: Icon(Icons.add),
       ),
@@ -168,7 +166,7 @@ class FilteredProductsWidget extends StatelessWidget {
             final product = viewModel.filteredProducts[index];
             return ListTile(
               leading: Text(product.id.toString()),
-              title: Text(product.nome),
+              title: Text(product.name),
               trailing: IconButton(
                 onPressed: () => viewModel.removeProduct.execute(product),
                 icon: Icon(Icons.delete),
