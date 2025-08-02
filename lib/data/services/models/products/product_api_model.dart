@@ -5,9 +5,21 @@ class ProductApiModel {
   final String categoryId;
   final DateTime createdDate;
 
-  const ProductApiModel({required this.id, required this.nome, required this.createdDate, required this.categoryId, required this.price}); 
+  const ProductApiModel({
+    required this.id,
+    required this.nome,
+    required this.createdDate,
+    required this.categoryId,
+    required this.price,
+  });
 
-  factory ProductApiModel.fromJson(Map<String, dynamic> json){
-    return ProductApiModel(id: json['id'], nome: json['nome'], createdDate: DateTime.parse(json['createdDate']), categoryId: json['category'], price: json['price']);
+  factory ProductApiModel.fromJson(Map<String, dynamic> json) {
+    return ProductApiModel(
+      id: json['id'],
+      nome: json['nome'],
+      createdDate: DateTime.parse(json['createdDate']),
+      categoryId: json['categoryId'],
+      price: double.parse(json['price'].toString()),
+    );
   }
 }

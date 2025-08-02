@@ -8,13 +8,18 @@ import 'package:turma_02/utils/result.dart';
 class ProductRepositoryDev extends ChangeNotifier implements ProductRepository {
   @override
   List<ProductModel> get products => _products;
-  List<ProductModel> _products = generateProductList();
+  final List<ProductModel> _products = generateProductList();
 
   @override
   Future<Result<ProductModel>> create(CreateProductDto product) async {
     try {
       await Future.delayed(Duration(seconds: 1));
-      final result = ProductModel(id: (_products.length + 1).toString(), name: product.name, price: product.price, categoryId: product.categoryId);
+      final result = ProductModel(
+        id: (_products.length + 1).toString(),
+        name: product.name,
+        price: product.price,
+        categoryId: product.categoryId,
+      );
       _products.add(result);
       return Result.ok(result);
     } on Exception catch (error) {
