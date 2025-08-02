@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:turma_02/domain/dtos/create_product_dto.dart';
+import 'package:turma_02/routing/routes.dart';
 import 'package:turma_02/ui/products/viewmodels/products_viewmodel.dart';
+import 'package:turma_02/ui/products/widgets/product_card_widget.dart';
 
 class ProductScreen extends StatefulWidget {
   final ProductsViewModel viewModel;
@@ -95,44 +98,55 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListenableBuilder(
-        listenable: widget.viewModel.load,
-        builder: (context, child) {
-          final command = widget.viewModel.load;
-          if (command.running) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (command.error) {
-            return Center(
-              child: Text("Ocorreu um erro"),
-            );
-          }
-          return child!;
-        },
+      appBar: AppBar(
+        title: Text("Produtos"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: ListenableBuilder(
-          listenable: widget.viewModel,
+          listenable: widget.viewModel.load,
           builder: (context, child) {
-            return ListView.builder(
-              itemCount: widget.viewModel.products.length,
-              itemBuilder: (context, index) {
-                final product = widget.viewModel.products[index];
-                return ListTile(
-                  leading: Text(product.id.toString()),
-                  title: Text(product.name),
-                  trailing: IconButton(
-                    onPressed: () =>
-                        widget.viewModel.removeProduct.execute(product),
-                    icon: Icon(Icons.delete),
+            final command = widget.viewModel.load;
+            if (command.running) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (command.error) {
+              return Center(
+                child: Text("Ocorreu um erro"),
+              );
+            }
+            return child!;
+          },
+          child: ListenableBuilder(
+            listenable: widget.viewModel,
+            builder: (context, child) {
+              if (widget.viewModel.products.isEmpty) {
+                return Expanded(
+                  child: Center(
+                    child: Text("Nenhum produto cadastrado."),
                   ),
                 );
-              },
-            );
-          },
+              }
+              return ListView.builder(
+                itemCount: widget.viewModel.products.length,
+                itemBuilder: (context, index) {
+                  final product = widget.viewModel.products[index];
+                  return ProductCardWidget(
+                    viewModel: widget.viewModel,
+                    product: product,
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          widget.viewModel.addProduct.execute(CreateProductDto(name: "name", price: 10.0, categoryId: "category2"));
+          context.push(Routes.productForm);
+
+          // widget.viewModel.addProduct.execute(CreateProductDto(
+          //     name: "name", price: 10.0, categoryId: "category2"));
         },
         child: Icon(Icons.add),
       ),
@@ -144,37 +158,5 @@ class _ProductScreenState extends State<ProductScreen> {
     widget.viewModel.addProduct.removeListener(_onCreateProduct);
     widget.viewModel.removeProduct.removeListener(_onRemoveProduct);
     super.dispose();
-  }
-}
-
-class FilteredProductsWidget extends StatelessWidget {
-  const FilteredProductsWidget({
-    super.key,
-    required this.viewModel,
-  });
-
-  final ProductsViewModel viewModel;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: viewModel,
-      builder: (child, context) {
-        return ListView.builder(
-          itemCount: viewModel.filteredProducts.length,
-          itemBuilder: (context, index) {
-            final product = viewModel.filteredProducts[index];
-            return ListTile(
-              leading: Text(product.id.toString()),
-              title: Text(product.name),
-              trailing: IconButton(
-                onPressed: () => viewModel.removeProduct.execute(product),
-                icon: Icon(Icons.delete),
-              ),
-            );
-          },
-        );
-      },
-    );
   }
 }

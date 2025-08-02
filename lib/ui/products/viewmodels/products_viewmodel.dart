@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:turma_02/data/repositories/product/product_repository.dart';
-import 'package:turma_02/domain/dtos/create_product_dto.dart';
+import 'package:turma_02/domain/usecases/add_product_usecase.dart';
 import 'package:turma_02/mock/products.dart';
 import 'package:turma_02/domain/models/product_model.dart';
 import 'package:turma_02/utils/command.dart';
@@ -8,7 +8,8 @@ import 'package:turma_02/utils/result.dart';
 
 class ProductsViewModel extends ChangeNotifier {
   final ProductRepository _productRepository;
-  ProductsViewModel(this._productRepository) {
+  final AddProductUsecase _addProductUsecase;
+  ProductsViewModel(this._productRepository, this._addProductUsecase) {
     _productRepository.addListener(() {
       notifyListeners();
     });
@@ -17,7 +18,7 @@ class ProductsViewModel extends ChangeNotifier {
   List<ProductModel> get products => _productRepository.products;
 
   late final load = Command0(_load);
-  late final addProduct = Command1(_addProduct);
+  late final addProduct = Command1(_addProductUsecase.create);
   late final removeProduct = Command1(_removeProduct);
   late final filteredProductsCommand = Command0(_filteredProducts);
   late final filterByCategory = Command0(_filterByCategory);
@@ -37,10 +38,6 @@ class ProductsViewModel extends ChangeNotifier {
     final result = generateProductList();
     filteredProducts = result;
     return Result.ok(filteredProducts);
-  }
-
-  Future<Result<ProductModel>> _addProduct(CreateProductDto product) async {
-    return await _productRepository.create(product);
   }
 
   Future<Result<void>> _removeProduct(ProductModel product) async {
