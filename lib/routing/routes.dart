@@ -1,12 +1,5 @@
 abstract class Routes {
   static String home = "/";
   static String productForm = "/product_form";
+  static String login = "/login";
 }
-
-
-//Navigator.of(context).push(MaterialPageRoute())
-///
-/// context.push(Routes.XXX, pathParams: int)
-///
-///
-///

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:turma_02/domain/dtos/create_product_dto.dart';
+import 'package:provider/provider.dart';
 import 'package:turma_02/routing/routes.dart';
+import 'package:turma_02/ui/logout/viewmodels/logout_viewmodel.dart';
 import 'package:turma_02/ui/products/viewmodels/products_viewmodel.dart';
 import 'package:turma_02/ui/products/widgets/product_card_widget.dart';
 
@@ -98,6 +99,21 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    final viewModel = LogoutViewmodel(context.read());
+                    viewModel.logout.execute();
+                  },
+                  child: Text("Logout")),
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
         title: Text("Produtos"),
       ),
