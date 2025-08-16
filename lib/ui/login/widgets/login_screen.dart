@@ -92,16 +92,28 @@ class _LoginScreenState extends State<LoginScreen> {
                   return null;
                 },
               ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState?.validate() == true) {
-                    final email = _emailController.text;
-                    final password = _passwordController.text;
-                    final loginDto = LoginDto(email: email, password: password);
-                    widget.viewModel.login.execute(loginDto);
-                  }
-                },
-                child: Text("Efetuar login"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      context.push(Routes.register);
+                    },
+                    child: Text("Cadastrar"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() == true) {
+                        final email = _emailController.text;
+                        final password = _passwordController.text;
+                        final loginDto =
+                            LoginDto(email: email, password: password);
+                        widget.viewModel.login.execute(loginDto);
+                      }
+                    },
+                    child: Text("Efetuar login"),
+                  )
+                ],
               )
             ],
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:turma_02/routing/router.dart';
+import 'package:turma_02/theme/app_theme.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -10,9 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: routerConfig(context.read()),
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      theme: lightTheme,
     );
   }
 }

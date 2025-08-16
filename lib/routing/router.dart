@@ -5,18 +5,21 @@ import 'package:turma_02/routing/routes.dart';
 import 'package:turma_02/ui/login/widgets/login_screen.dart';
 import 'package:turma_02/ui/product_form/widgets/product_form_screen.dart';
 import 'package:turma_02/ui/products/widgets/products_screen.dart';
+import 'package:turma_02/ui/register/viewmodels/register_viewmodel.dart';
+import 'package:turma_02/ui/register/widgets/register_screen.dart';
 
 GoRouter routerConfig(AuthRepository authRepository) {
   return GoRouter(
     refreshListenable: authRepository,
     redirect: (context, state) async {
       await authRepository.isLoggedIn();
-      print("User: ${authRepository.user}");
-
       final isLoggedIn = authRepository.user != null;
       final isLoggingIn = state.matchedLocation == Routes.login;
+      final isRegistering = state.matchedLocation == Routes.register;
 
-      print(state.path);
+      if (isRegistering) {
+        return Routes.register;
+      }
 
       if (!isLoggedIn) {
         return Routes.login;
@@ -49,6 +52,14 @@ GoRouter routerConfig(AuthRepository authRepository) {
         builder: (context, state) => LoginScreen(
           viewModel: context.read(),
         ),
+      ),
+      GoRoute(
+        path: Routes.register,
+        builder: (context, state) {
+          return RegisterScreen(
+            viewModel: RegisterViewmodel(context.read()),
+          );
+        },
       ),
     ],
   );

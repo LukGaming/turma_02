@@ -2,8 +2,10 @@ import 'package:flutter/widgets.dart';
 import 'package:turma_02/data/repositories/auth_repository/auth_repository.dart';
 import 'package:turma_02/data/services/auth_api.dart';
 import 'package:turma_02/data/services/models/user/login_response.dart';
+import 'package:turma_02/data/services/models/user/register_user_request.dart';
 import 'package:turma_02/data/services/shared_preferences_service.dart';
 import 'package:turma_02/domain/dtos/login_dto.dart';
+import 'package:turma_02/domain/dtos/register_user_dto.dart';
 import 'package:turma_02/domain/models/user.dart';
 import 'package:turma_02/utils/result.dart';
 
@@ -81,5 +83,16 @@ class AuthRepositoryRemote extends ChangeNotifier implements AuthRepository {
     } finally {
       notifyListeners();
     }
+  }
+
+  @override
+  Future<Result<void>> register(RegisterUserDto user) async {
+    final request = RegisterUserRequest(
+      name: user.name,
+      email: user.email,
+      password: user.password,
+    );
+
+    return await _authApi.register(request);
   }
 }

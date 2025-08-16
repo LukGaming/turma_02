@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:turma_02/data/services/models/user/login_response.dart';
+import 'package:turma_02/data/services/models/user/register_user_request.dart';
 import 'package:turma_02/domain/dtos/login_dto.dart';
 import 'package:turma_02/utils/result.dart';
 
@@ -18,18 +19,34 @@ class AuthApi {
   Future<Result<LoginResponse>> login(LoginDto params) async {
     await setup();
 
-    // try {
-    final response = await _dio.post("/auth/login", data: {
-      "email": params.email,
-      "password": params.password,
-    });
+    try {
+      final response = await _dio.post("/auth/login", data: {
+        "email": params.email,
+        "password": params.password,
+      });
 
-    if (response.statusCode == 200) {
-      return Result.ok(LoginResponse.fromJson(response.data["user"]));
+      if (response.statusCode == 200) {
+        return Result.ok(LoginResponse.fromJson(response.data["user"]));
+      }
+      return Result.error(Exception("Invalid Status Code"));
+    } on Exception catch (error) {
+      return Result.error(error);
     }
-    return Result.error(Exception("Invalid Status Code"));
-    // } on Exception catch (error) {
-    //   return Result.error(error);
-    // }
+  }
+
+  Future<Result<void>> register(RegisterUserRequest request) async {
+    await setup();
+
+    try {
+      final response =
+          await _dio.post("/auth/register", data: request.toJson());
+
+      if (response.statusCode == 201) {
+        return Result.ok(null);
+      }
+      return Result.error(Exception("Invalid Status Code"));
+    } on Exception catch (error) {
+      return Result.error(error);
+    }
   }
 }
